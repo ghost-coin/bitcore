@@ -15,6 +15,7 @@ const Constants = Common.Constants,
 const Bitcore = {
   btc: require('bitcore-lib'),
   bch: require('bitcore-lib-cash'),
+  ghost: require('bitcore-lib-ghost'),
   eth: require('bitcore-lib'),
   xrp: require('bitcore-lib')
 };
@@ -42,6 +43,7 @@ export interface IWallet {
   beAuthPrivateKey2: string;
   beAuthPublicKey2: string;
   nativeCashAddr: boolean;
+  coldStakingSetup: any;
   isTestnet?: boolean;
   usePurpose48?: boolean;
 }
@@ -69,8 +71,10 @@ export class Wallet {
   beAuthPrivateKey2: string;
   beAuthPublicKey2: string;
   nativeCashAddr: boolean;
+  coldStakingSetup: any;
   isTestnet?: boolean;
   usePurpose48?: boolean;
+ 
 
   scanning: boolean;
   static COPAYER_PAIR_LIMITS = {};
@@ -116,7 +120,7 @@ export class Wallet {
 
     // x.nativeCashAddr opts is only for testing
     x.nativeCashAddr = _.isUndefined(opts.nativeCashAddr) ? (x.coin == 'bch' ? true : null) : opts.nativeCashAddr;
-
+    x.coldStakingSetup = {};
     return x;
   }
 
@@ -154,6 +158,7 @@ export class Wallet {
 
     x.nativeCashAddr = obj.nativeCashAddr;
     x.usePurpose48 = obj.usePurpose48;
+    x.coldStakingSetup = obj.coldStakingSetup;
 
     return x;
   }
@@ -288,4 +293,45 @@ export class Wallet {
     );
     return address;
   }
+  updateColdStakingSetup(coldStakingSetup: any){
+    this.coldStakingSetup = coldStakingSetup;
+  }
+  getColdStakingSetup(){
+    return this.coldStakingSetup;
+  }
+  getColdStakingAddresses(spendAddress: string){
+    const addresses = {};
+    if (this.coin !== 'ghost' || _.isEmpty(this.coldStakingSetup)) {
+      return addresses;
+    }
+  
+    if (this.coldStakingSetup.staking_key.startsWith('pcs') ||
+        this.coldStakingSetup.staking_key.startsWith('tpcs')) {
+  
+      if (!this.coldStakingSetup.spend_address) {
+        this.coldStakingSetup.spend_address = spendAddress ? spendAddress : this.createAddress(true, true);
+      }
+  
+      addresses['staking_address'] = this.coldStakingSetup.staking_key;
+      addresses['spend_address'] = this.coldStakingSetup.spend_address;
+    } else {
+      const xPub = Bitcore[`${this.coin}`].HDPublicKey(this.coldStakingSetup.staking_key);
+  
+      if (!this.coldStakingSetup.address_index) {
+        this.coldStakingSetup['address_index'] = 0;
+      }
+  
+      const coldStakingAddress = xPub
+        .derive(this.coldStakingSetup.address_index++)
+        .publicKey.toAddress()
+        .toString();
+  
+      addresses['staking_address'] = coldStakingAddress;
+      addresses['spend_address'] = spendAddress ? spendAddress : this.createAddress(true, true);
+    }
+  
+    return addresses;
+
+  }
+
 }

@@ -10,6 +10,10 @@ log.debug = log.verbose;
 
 const PROVIDERS = {
   v8: {
+    ghost: {
+      livenet: 'https://api-ghost.ghostbymcafee.com',
+      testnet: 'https://api-ghost.ghostbymcafee.com'
+    },
     btc: {
       livenet: 'https://api.bitpay.com',
       testnet: 'https://api.bitpay.com'

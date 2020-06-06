@@ -6,5 +6,9 @@ module.exports = {
   BCH: {
     lib: require('bitcore-lib-cash'),
     p2p: require('bitcore-p2p-cash')
+  },
+  GHOST: {
+    lib: require('bitcore-lib-ghost'),
+    p2p: require('bitcore-p2p-ghost')
   }
 };

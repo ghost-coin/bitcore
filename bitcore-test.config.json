@@ -1,6 +1,6 @@
 {
   "bitcoreNode": {
-    "modules": ["./bitcoin", "./bitcoin-cash", "./ethereum", "./ripple"],
+    "modules": ["./bitcoin", "./bitcoin-cash", "./ethereum", "./ripple", "./ghost"],
     "services": {
       "api": {
         "wallets": {
@@ -20,6 +20,23 @@
           ],
           "rpc": {
             "host": "bitcoin",
+            "port": 8333,
+            "username": "bitcorenodetest",
+            "password": "local321"
+          }
+        }
+      },
+      "GHOST": {
+        "testnet": {
+          "chainSource": "p2p",
+          "trustedPeers": [
+            {
+              "host": "ghost",
+              "port": 8332
+            }
+          ],
+          "rpc": {
+            "host": "ghost",
             "port": 8333,
             "username": "bitcorenodetest",
             "password": "local321"
