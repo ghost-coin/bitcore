@@ -18,6 +18,7 @@ var async = require('async');
 var events = require('events');
 var Bitcore = CWC.BitcoreLib;
 var Bitcore_ = {
+  ghost: CWC.BitcoreLibGhost,
   btc: CWC.BitcoreLib,
   bch: CWC.BitcoreLibCash,
   eth: CWC.BitcoreLib,
@@ -2405,6 +2406,8 @@ export class API extends EventEmitter {
         ['eth', 'testnet'],
         ['xrp', 'livenet'],
         ['xrp', 'testnet'],
+        ['ghost', 'livenet'],
+        ['ghost', 'livenet', true],
         ['btc', 'livenet', true],
         ['bch', 'livenet', true]
       ];

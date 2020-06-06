@@ -2,9 +2,11 @@ import { BCHTxProvider } from './bch';
 import { BTCTxProvider } from './btc';
 import { ERC20TxProvider } from './erc20';
 import { ETHTxProvider } from './eth';
+import { GHOSTxProvider } from './ghost';
 import { XRPTxProvider } from './xrp';
 
 const providers = {
+  GHOST: new GHOSTxProvider(),
   BTC: new BTCTxProvider(),
   BCH: new BCHTxProvider(),
   ETH: new ETHTxProvider(),
